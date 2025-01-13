@@ -58,7 +58,10 @@ const CustomDrawerContent = (props) => {
   };
 
   return (
-    <DrawerContentScrollView {...props}>
+    <DrawerContentScrollView
+      {...props}
+      contentContainerStyle={{ paddingHorizontal: 0 }}
+    >
       {/* <View style={styles.drawerHeader}>
         <Image source={profile} style={styles.drawerImage} />
         <Text style={styles.drawerName}>Souvik Das</Text>
@@ -80,7 +83,12 @@ const CustomDrawerContent = (props) => {
 
       <DrawerItem
         label={() => (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
             <Ionicons
               name="home"
               size={20}
@@ -614,25 +622,42 @@ const styles = StyleSheet.create({
     color: "#bdc3c7",
     fontSize: 14,
   },
-  selectedDrawerItem: {
-    backgroundColor: "#607d8b", // Background color when selected
-    color: "#fff", // Text color when selected
-    borderTopLeftRadius: 20, // Top-left corner radius
-    borderTopRightRadius: 0, // Top-right corner radius
-    borderBottomLeftRadius: 20, // Bottom-left corner radius
-    borderBottomRightRadius: 0, // Bottom-right corner radius
-  },
+  // selectedDrawerItem: {
+  //   backgroundColor: "#607d8b", // Background color when selected
+  //   color: "#fff", // Text color when selected
+  //   borderTopLeftRadius: 20, // Top-left corner radius
+  //   borderTopRightRadius: 0, // Top-right corner radius
+  //   borderBottomLeftRadius: 20, // Bottom-left corner radius
+  //   borderBottomRightRadius: 0, // Bottom-right corner radius
+  // },
   selectedLabel: {
     color: "#FFFFFF", // White font color for the selected item
     fontWeight: "bold",
     fontSize: 16,
   },
+  // drawerItem: {
+  //   borderBottomWidth: 1, // Adds a bottom border
+  //   borderBottomColor: "#ccc", // Light gray border color
+  //   paddingVertical: 5, // Optional padding for spacing
+  //   paddingTop: 0,
+  //   // backgroundColor: "yellow",
+  // },
+
   drawerItem: {
     borderBottomWidth: 1, // Adds a bottom border
     borderBottomColor: "#ccc", // Light gray border color
+    marginHorizontal: 0, // Ensures no horizontal gap
+    paddingHorizontal: 0, // Removes padding on the sides
     paddingVertical: 5, // Optional padding for spacing
     paddingTop: 0,
-    // backgroundColor: "yellow",
+  },
+  selectedDrawerItem: {
+    backgroundColor: "#6c7a89", // Adjust as per your selected item's design
+    borderRadius: 0, // Remove any rounding if it's causing the gap
+    borderTopLeftRadius: 20, // Top-left corner radius
+    borderTopRightRadius: 0, // Top-right corner radius
+    borderBottomLeftRadius: 20, // Bottom-left corner radius
+    borderBottomRightRadius: 0, // Bottom-right corner radius
   },
   drawerLabel: {
     color: "#000", // Default text color
