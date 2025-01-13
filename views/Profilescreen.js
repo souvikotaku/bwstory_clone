@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
+import profile from "../assets/profilepic.png";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ProfileScreen = () => {
   const userData = {
@@ -33,40 +36,204 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       {/* Header Section */}
-      <View style={styles.header}>
-        <Image
-          source={{ uri: "https://via.placeholder.com/100" }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.name}>{userData.name}</Text>
-        <Text style={styles.location}>{userData.location}</Text>
-        <Text style={styles.anonymity}>{userData.anonymity}</Text>
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
+      <View
+        style={[
+          styles.header,
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+          },
+        ]}
+      >
+        <View
+          style={{
+            // backgroundColor: "pink",
+            flexDirection: "row",
+          }}
+        >
+          <Image source={profile} style={styles.profileImage} />
+          <View
+            style={{
+              paddingHorizontal: 5,
+            }}
+          >
+            <Text style={styles.name}>{userData.name}</Text>
+            <Text style={styles.location}>
+              {" "}
+              <FontAwesome name="location-arrow" size={14} />{" "}
+              {userData.location}
+            </Text>
+            <Text style={styles.anonymity}>
+              {" "}
+              <Ionicons name="bag" size={14} /> {userData.anonymity}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            // backgroundColor: "yellow",
+            paddingVertical: 10,
+            height: "100%",
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              styles.editButton,
+              {
+                width: 80,
+              },
+            ]}
+          >
+            <Text style={styles.editButtonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Stats Section */}
-      <View style={styles.statsContainer}>
-        {Object.entries(userData.stats).map(([key, value]) => (
-          <View key={key} style={styles.stat}>
-            <Text style={styles.statValue}>{value}</Text>
-            <Text style={styles.statLabel}>
-              {key.charAt(0).toUpperCase() + key.slice(1)}
-            </Text>
-          </View>
-        ))}
+      <View
+        style={{
+          flexDirection: "row",
+          // backgroundColor: "yellow",
+          justifyContent: "space-between",
+          marginTop: "-5%",
+        }}
+      >
+        <View
+          style={{
+            ...styles.statsContainer,
+            // backgroundColor: "blue",
+            alignItems: "center",
+            padding: 5,
+            paddingLeft: 0,
+          }}
+        >
+          <TouchableOpacity style={styles.editButton}>
+            <Text style={styles.editButtonText}>Trash</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ ...styles.statsContainer }}>
+          {Object.entries(userData.stats).map(([key, value], index) => (
+            <View
+              key={key}
+              style={{
+                ...styles.stat,
+                paddingHorizontal: 3,
+                borderLeftWidth: 1, // Set the border width
+                borderLeftColor: index !== 0 ? "#ccc" : "transparent", // Set the border color
+              }}
+            >
+              <Text style={styles.statValue}>{value}</Text>
+              <Text style={styles.statLabel}>
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </Text>
+            </View>
+          ))}
+        </View>
       </View>
 
       {/* About Section */}
-      <View style={styles.aboutContainer}>
-        <Text style={styles.sectionTitle}>About me</Text>
-        <Text style={styles.aboutText}>{userData.about}</Text>
+
+      <View>
+        {/* About Container */}
+        <View style={[styles.aboutContainer]}>
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                // backgroundColor: "yellow",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={[
+                  styles.sectionTitle,
+                  {
+                    margin: "auto",
+                  },
+                ]}
+              >
+                About me
+              </Text>
+            </View>
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row", // Stack buttons vertically
+                alignItems: "flex-end", // Align buttons to the right
+                flexShrink: 1, // Prevent buttons from overflowing
+                // backgroundColor: "yellow",
+                alignItems: "start",
+              }}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.editButton,
+                  {
+                    marginLeft: 0,
+                  },
+                ]}
+              >
+                <Text style={styles.editButtonText}>Drafts</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.editButton,
+                  {
+                    marginRight: 0,
+                  },
+                ]}
+              >
+                <Text style={styles.editButtonText}>History</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <Text style={styles.aboutText}>{userData.about}</Text>
+        </View>
+
+        {/* Buttons Container */}
+        {/* <View
+          style={{
+            justifyContent: "space-between",
+            flexDirection: "row", // Stack buttons vertically
+            alignItems: "flex-end", // Align buttons to the right
+            flexShrink: 1, // Prevent buttons from overflowing
+            backgroundColor: "yellow",
+            alignItems: "start",
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              styles.editButton,
+              {
+                marginLeft: 0,
+              },
+            ]}
+          >
+            <Text style={styles.editButtonText}>Drafts</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.editButton,
+              {
+                marginRight: 0,
+              },
+            ]}
+          >
+            <Text style={styles.editButtonText}>History</Text>
+          </TouchableOpacity>
+        </View> */}
       </View>
 
       {/* Posts Section */}
       <View style={styles.postsContainer}>
-        <Text style={styles.sectionTitle}>My Posts</Text>
+        {/* <Text style={styles.sectionTitle}>My Posts</Text> */}
         {userData.posts.length === 0 ? (
           <Text style={styles.noPostsText}>No Posts</Text>
         ) : (
@@ -98,12 +265,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   name: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: "bold",
     marginTop: 10,
   },
   location: {
-    fontSize: 16,
+    fontSize: 14,
     color: "gray",
   },
   anonymity: {
@@ -112,10 +279,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editButton: {
-    backgroundColor: "#0066CC",
+    backgroundColor: "#144353",
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 20,
+    height: 40,
+    margin: 5,
+    marginTop: 0,
+    shadowColor: "#000", // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow direction (horizontal, vertical)
+    shadowOpacity: 0.1, // Shadow transparency
+    shadowRadius: 6, // How far the shadow spreads
+    // Android shadow property
+    elevation: 5, // Android shadow effect
+    justifyContent: "center", // Center vertically
+    alignItems: "center", // Center horizontally
   },
   editButtonText: {
     color: "#FFFFFF",
@@ -134,7 +312,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 13,
     color: "gray",
   },
   aboutContainer: {

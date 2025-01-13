@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
 import {
   NavigationContainer,
   useNavigation,
@@ -18,12 +25,14 @@ import {
 import Homescreen from "./views/Homescreen"; // Adjust the path based on your project structure
 import Profilescreen from "./views/Profilescreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { setSelectedItem } from "./redux/dataSlice";
 import { useDispatch, useSelector } from "react-redux";
+import profile from "./assets/profilepic.png";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -34,6 +43,7 @@ const CustomDrawerContent = (props) => {
   const selectedItem = useSelector((state) => state.data.selectedItem);
 
   const handleNavigation = (screen) => {
+    // console.log("selectedItem", selectedItem);
     dispatch(setSelectedItem(screen)); // Set the selected item
 
     props.navigation.closeDrawer(); // Close the drawer
@@ -42,67 +52,278 @@ const CustomDrawerContent = (props) => {
         index: 0,
         routes: [{ name: "Home" }],
       });
-    } else if (screen === "Notifications") {
-      alert("Notifications");
     } else if (screen === "Profile") {
       props.navigation.navigate("Home", { screen: "Profile" });
-    } else if (screen === "Logout") {
-      alert("Logout");
     }
   };
 
   return (
     <DrawerContentScrollView {...props}>
-      <View style={styles.drawerHeader}>
-        <Image
-          source={{ uri: "https://via.placeholder.com/50" }}
-          style={styles.drawerImage}
-        />
+      {/* <View style={styles.drawerHeader}>
+        <Image source={profile} style={styles.drawerImage} />
         <Text style={styles.drawerName}>Souvik Das</Text>
         <Text style={styles.drawerLocation}>Kolkata, West Bengal</Text>
-      </View>
+      </View> */}
+      <ImageBackground
+        source={require("./assets/japan.jpg")} // Path to your background image
+        style={styles.drawerHeader}
+      >
+        <View style={styles.headerContent}>
+          <Image source={profile} style={styles.drawerImage} />
+          <Text style={styles.drawerName}>Souvik Das</Text>
+          <Text style={styles.drawerLocation}>
+            <FontAwesome6 name="location-arrow" color={"#bdc3c7"} size={15} />{" "}
+            Kolkata, West Bengal
+          </Text>
+        </View>
+      </ImageBackground>
 
       <DrawerItem
-        label="Home"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Ionicons
+              name="home"
+              size={20}
+              color={selectedItem === "Home" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Home"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Home
+            </Text>
+          </View>
+        )}
         onPress={() => handleNavigation("Home")}
         style={[
+          styles.drawerItem,
           selectedItem === "Home" && styles.selectedDrawerItem, // Highlight if selected
         ]}
-        labelStyle={[
-          selectedItem === "Home" && styles.selectedLabel, // White font if selected
-        ]}
       />
 
       <DrawerItem
-        label="Notifications"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <EvilIcons
+              name="bell"
+              size={25}
+              color={selectedItem === "Notifications" ? "white" : "black"}
+              style={{ marginRight: 21, marginLeft: 3 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Notifications"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Notifications
+            </Text>
+          </View>
+        )}
         onPress={() => handleNavigation("Notifications")}
         style={[
+          styles.drawerItem,
           selectedItem === "Notifications" && styles.selectedDrawerItem, // Highlight if selected
         ]}
-        labelStyle={[
-          selectedItem === "Notifications" && styles.selectedLabel, // White font if selected
-        ]}
       />
 
       <DrawerItem
-        label="Profile"
+        // label="Profile"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign
+              name="user"
+              size={20}
+              color={selectedItem === "Profile" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Profile"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Profile
+            </Text>
+          </View>
+        )}
         onPress={() => handleNavigation("Profile")}
         style={[
+          styles.drawerItem,
           selectedItem === "Profile" && styles.selectedDrawerItem, // Highlight if selected
-        ]}
-        labelStyle={[
-          selectedItem === "Profile" && styles.selectedLabel, // White font if selected
         ]}
       />
 
       <DrawerItem
-        label="Logout"
+        // label="Invite Friends"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign
+              name="adduser"
+              size={20}
+              color={selectedItem === "Invite Friends" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Invite Friends"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Invite Friends
+            </Text>
+          </View>
+        )}
+        onPress={() => handleNavigation("Invite Friends")}
+        style={[
+          styles.drawerItem,
+          selectedItem === "Invite Friends" && styles.selectedDrawerItem, // Highlight if selected
+        ]}
+      />
+      <DrawerItem
+        // label="About us"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign
+              name="infocirlceo"
+              size={20}
+              color={selectedItem === "About us" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "About us"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              About us
+            </Text>
+          </View>
+        )}
+        onPress={() => handleNavigation("About us")}
+        style={[
+          styles.drawerItem,
+          selectedItem === "About us" && styles.selectedDrawerItem, // Highlight if selected
+        ]}
+      />
+      <DrawerItem
+        // label="Support"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <FontAwesome5
+              name="headphones-alt"
+              size={20}
+              color={selectedItem === "Support" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Support"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Support
+            </Text>
+          </View>
+        )}
+        onPress={() => handleNavigation("Support")}
+        style={[
+          styles.drawerItem,
+          selectedItem === "Support" && styles.selectedDrawerItem, // Highlight if selected
+        ]}
+      />
+      <DrawerItem
+        // label="FAQ"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign
+              name="questioncircleo"
+              size={20}
+              color={selectedItem === "FAQ" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "FAQ"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              FAQ
+            </Text>
+          </View>
+        )}
+        onPress={() => handleNavigation("FAQ")}
+        style={[
+          styles.drawerItem,
+          selectedItem === "FAQ" && styles.selectedDrawerItem, // Highlight if selected
+        ]}
+      />
+      <DrawerItem
+        // label="Settings"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign
+              name="setting"
+              size={20}
+              color={selectedItem === "Settings" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Settings"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Settings
+            </Text>
+          </View>
+        )}
+        onPress={() => handleNavigation("Settings")}
+        style={[
+          styles.drawerItem,
+          selectedItem === "Settings" && styles.selectedDrawerItem, // Highlight if selected
+        ]}
+        // labelStyle={[
+        //   styles.drawerLabel,
+        //   selectedItem === "Settings" && styles.selectedLabel, // White font if selected
+        // ]}
+      />
+      <DrawerItem
+        // label="Logout"
+        label={() => (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <AntDesign
+              name="poweroff"
+              size={20}
+              color={selectedItem === "Logout" ? "white" : "black"}
+              style={{ marginRight: 25, marginLeft: 5 }}
+            />
+            <Text
+              style={[
+                selectedItem === "Logout"
+                  ? styles.selectedLabel
+                  : styles.drawerLabel, // White font if selected
+              ]}
+            >
+              Logout
+            </Text>
+          </View>
+        )}
         onPress={() => handleNavigation("Logout")}
         style={[
+          styles.drawerItem,
           selectedItem === "Logout" && styles.selectedDrawerItem, // Highlight if selected
-        ]}
-        labelStyle={[
-          selectedItem === "Logout" && styles.selectedLabel, // White font if selected
         ]}
       />
     </DrawerContentScrollView>
@@ -123,131 +344,33 @@ const HomeStack = () => {
 };
 
 const ProfileStack = () => {
+  const selectedItem = useSelector((state) => state.data.selectedItem);
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false, // Disable header for all screens
       }}
     >
-      <Stack.Screen name="Carwashprofile" component={Profilescreen} />
+      {selectedItem === "Home" ? (
+        <Stack.Screen name="Home" component={Homescreen} />
+      ) : (
+        <Stack.Screen name="Carwashprofile" component={Profilescreen} />
+      )}
     </Stack.Navigator>
   );
 };
-
-// const TabNav = () => {
-//   const dispatch = useDispatch();
-//   const selectedItem = useSelector((state) => state.data.selectedItem);
-//   useEffect(() => {
-//     // Ensure that selectedItem state is synced with navigation actions
-//     if (selectedItem) {
-//       console.log("selected", selectedItem);
-//       // You can also trigger other side effects or updates based on selectedItem here
-//     }
-//   }, [selectedItem]);
-//   return (
-//     <Tab.Navigator
-//       screenOptions={{
-//         headerShown: false, // Disable header in tab navigator
-//         tabBarActiveTintColor: "#144353", // Active tab color
-//       }}
-//     >
-//       <Tab.Screen
-//         name="Home"
-//         component={HomeStack} // Stack as a Tab.Screen
-//         options={{
-//           tabBarLabel: "Discover",
-//           tabBarIcon: ({ color, size, focused }) => (
-//             <View style={{ alignItems: "center" }}>
-//               <Ionicons
-//                 name="compass-outline"
-//                 color={focused ? "#144353" : color}
-//                 size={size}
-//               />
-//             </View>
-//           ),
-//           tabPress: () => {
-//             dispatch(setSelectedItem("Home"));
-//           },
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Local"
-//         // component={Categoryscreen}
-//         component={ProfileStack}
-//         options={{
-//           tabBarIcon: ({ color, size, focused }) => (
-//             <View style={{ alignItems: "center" }}>
-//               <FontAwesome6
-//                 name="location-arrow"
-//                 color={focused ? "#144353" : color}
-//                 size={size}
-//               />
-//             </View>
-//           ),
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Add"
-//         component={ProfileStack}
-//         options={{
-//           tabBarIcon: ({ color, size, focused }) => (
-//             <View style={{ alignItems: "center" }}>
-//               <Ionicons
-//                 name="add-circle-outline"
-//                 color={focused ? "#144353" : color}
-//                 size={size}
-//               />
-//             </View>
-//           ),
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Alert"
-//         component={ProfileStack}
-//         options={{
-//           tabBarIcon: ({ color, size, focused }) => (
-//             <View style={{ alignItems: "center" }}>
-//               <EvilIcons
-//                 name="bell"
-//                 color={focused ? "#144353" : color}
-//                 size={35}
-//               />
-//             </View>
-//           ),
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Profile"
-//         component={ProfileStack}
-//         options={{
-//           tabBarIcon: ({ color, size, focused }) => (
-//             <View style={{ alignItems: "center" }}>
-//               <FontAwesome
-//                 name="user-circle-o"
-//                 color={focused ? "#144353" : color}
-//                 size={size}
-//               />
-//             </View>
-//           ),
-//           tabPress: () => {
-//             dispatch(setSelectedItem("Carwashprofile"));
-//           },
-//         }}
-//       />
-//     </Tab.Navigator>
-//   );
-// };
 
 const TabNav = () => {
   const dispatch = useDispatch();
   const selectedItem = useSelector((state) => state.data.selectedItem);
 
-  useEffect(() => {
-    // Ensure that selectedItem state is synced with navigation actions
-    if (selectedItem) {
-      console.log("selected", selectedItem);
-    }
-  }, [selectedItem]);
+  // useEffect(() => {
+  //   // Ensure that selectedItem state is synced with navigation actions
+  //   if (selectedItem) {
+  //     console.log("selected", selectedItem);
+  //   }
+  // }, [selectedItem]);
 
   return (
     <Tab.Navigator
@@ -294,7 +417,12 @@ const TabNav = () => {
         }}
         listeners={{
           tabPress: () => {
-            dispatch(setSelectedItem("Local")); // Set the selected item
+            if (selectedItem === "Home") {
+              dispatch(setSelectedItem("Home"));
+            } else {
+              dispatch(setSelectedItem("Profile"));
+            }
+            // dispatch(setSelectedItem("Local")); // Set the selected item
             console.log("Local tab pressed");
           },
         }}
@@ -315,7 +443,12 @@ const TabNav = () => {
         }}
         listeners={{
           tabPress: () => {
-            dispatch(setSelectedItem("Add")); // Set the selected item
+            if (selectedItem === "Home") {
+              dispatch(setSelectedItem("Home"));
+            } else {
+              dispatch(setSelectedItem("Profile"));
+            }
+            // dispatch(setSelectedItem("Add")); // Set the selected item
             console.log("Add tab pressed");
           },
         }}
@@ -336,7 +469,12 @@ const TabNav = () => {
         }}
         listeners={{
           tabPress: () => {
-            dispatch(setSelectedItem("Alert")); // Set the selected item
+            if (selectedItem === "Home") {
+              dispatch(setSelectedItem("Home"));
+            } else {
+              dispatch(setSelectedItem("Profile"));
+            }
+            // dispatch(setSelectedItem("Alert")); // Set the selected item
             console.log("Alert tab pressed");
           },
         }}
@@ -365,6 +503,7 @@ const TabNav = () => {
     </Tab.Navigator>
   );
 };
+
 const DrawerNavigation = () => (
   <Drawer.Navigator
     drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -451,8 +590,15 @@ const styles = StyleSheet.create({
   },
   drawerHeader: {
     padding: 20,
-    alignItems: "center",
-    backgroundColor: "#144353",
+    // alignItems: "left",
+    // backgroundColor: "#144353",
+    // justifyContent: "center", // Center the content if needed
+    alignItems: "left", // Center the content horizontally
+  },
+  headerContent: {
+    alignItems: "left", // Center the content inside
+    // justifyContent: "center",
+    // padding: 20,
   },
   drawerImage: {
     width: 50,
@@ -469,11 +615,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   selectedDrawerItem: {
-    backgroundColor: "#144353", // Background color when selected
+    backgroundColor: "#607d8b", // Background color when selected
     color: "#fff", // Text color when selected
+    borderTopLeftRadius: 20, // Top-left corner radius
+    borderTopRightRadius: 0, // Top-right corner radius
+    borderBottomLeftRadius: 20, // Bottom-left corner radius
+    borderBottomRightRadius: 0, // Bottom-right corner radius
   },
   selectedLabel: {
     color: "#FFFFFF", // White font color for the selected item
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  drawerItem: {
+    borderBottomWidth: 1, // Adds a bottom border
+    borderBottomColor: "#ccc", // Light gray border color
+    paddingVertical: 5, // Optional padding for spacing
+    paddingTop: 0,
+    // backgroundColor: "yellow",
+  },
+  drawerLabel: {
+    color: "#000", // Default text color
+    fontSize: 16,
     fontWeight: "bold",
   },
 });
