@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,16 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from "react-native";
-
-import sidney from "../assets/sidney.jpg";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import axios from "axios";
 
 const HomeScreen = () => {
   const [selectedTab, setSelectedTab] = useState("All"); // State to track selected tab
+  const [articles, setArticles] = useState([]); // State to hold fetched articles
+  const [loading, setLoading] = useState(true); // State for loading indicator
 
   const categories = [
     "All",
@@ -23,22 +25,34 @@ const HomeScreen = () => {
     "Technology",
     "Government",
     "Business",
-  ]; // Add more categories if needed
+  ];
+
+  const fetchArticles = async (category) => {
+    setLoading(true); // Show loading spinner
+    try {
+      const endpoint =
+        category === "All"
+          ? "https://bwstoryconebackend.onrender.com/api/articles/fetch"
+          : `https://bwstoryconebackend.onrender.com/api/articles/fetch?category=${category}`;
+
+      const { data } = await axios.get(endpoint); // Axios GET request
+      setArticles(data); // Set articles state with the response data
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
+      setLoading(false); // Hide loading spinner
+    }
+  };
+  // Fetch articles on category change
+  useEffect(() => {
+    fetchArticles(selectedTab);
+  }, [selectedTab]);
 
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.header, paddingLeft: 10 }}>
-        {/* <Text style={styles.logo}>BWstory</Text> */}
-        {/* <TouchableOpacity style={styles.profileIcon}>
-          <Image
-            source={{ uri: "https://via.placeholder.com/30" }}
-            style={styles.profileImage}
-          />
-        </TouchableOpacity> */}
+      {/* Header with Tabs */}
+      <View style={styles.header}>
         <ScrollView
-          // style={{
-          //   backgroundColor: "pink",
-          // }}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
@@ -49,11 +63,8 @@ const HomeScreen = () => {
               style={[
                 styles.tabButton,
                 selectedTab === category && styles.activeTab,
-                {
-                  paddingHorizontal: index === 0 ? 40 : 15,
-                },
               ]}
-              onPress={() => setSelectedTab(category)} // Set selected tab on press
+              onPress={() => setSelectedTab(category)}
             >
               <Text
                 style={[
@@ -67,94 +78,91 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
       </View>
-      {/* <View style={styles.postCard}>
-        <Text style={styles.postAuthor}>Sidney Sweeney</Text>
-        <Image source={sidney} style={styles.postImage} alt="sidney" />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            // backgroundColor: "yellow",
-            padding: 0.1, // Optional padding for spacing
-            width: "100%", // Ensure the View takes up full width of the screen
-          }}
-        >
-          <Text style={styles.postText2}>Jan 5, 2025</Text>
-          <Text style={styles.postText2}>Internet | 43 Views</Text>
-        </View>
-        <Text style={styles.postText}>morning ☀️☀️</Text>
-        <Text style={styles.locationText}>Paris, France</Text>
-      </View> */}
-      <View style={styles.postCard}>
-        {/* Profile Section */}
-        <View
-          style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
-        >
-          <Image source={sidney} style={styles.profileImage} />
-          <Text style={styles.postAuthor}>Sidney Sweeney</Text>
-        </View>
 
-        {/* Post Image */}
-        <Image source={sidney} style={styles.postImage} alt="sidney" />
+      {/* Content */}
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color="#144353"
+          style={{ marginTop: 20 }}
+        />
+      ) : (
+        <ScrollView>
+          {articles.length > 0 ? (
+            articles.map((article, index) => (
+              <View key={index} style={styles.postCard}>
+                {/* Profile Section */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: 10,
+                  }}
+                >
+                  <Image
+                    source={{ uri: article.authorImage }}
+                    style={styles.profileImage}
+                  />
+                  <Text style={styles.postAuthor}>{article.author}</Text>
+                </View>
 
-        {/* Date and Views Section */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            marginVertical: 5,
-          }}
-        >
-          <Text style={styles.postText2}>Jan 5, 2025</Text>
-          <Text style={styles.postText2}>Internet | 43 Views</Text>
-        </View>
+                {/* Post Image */}
+                <Image
+                  source={{ uri: article.postImage }}
+                  style={styles.postImage}
+                />
 
-        {/* Post Text */}
-        <Text style={styles.postText}>morning ☀️☀️</Text>
+                {/* Date and Views Section */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
+                    marginVertical: 5,
+                  }}
+                >
+                  <Text style={styles.postText2}>
+                    {new Date(article.date).toDateString()}
+                  </Text>
+                  <Text style={styles.postText2}>
+                    {article.category} | {article.views} Views
+                  </Text>
+                </View>
 
-        {/* Location */}
-
-        {/* Icons Section */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "left",
-            paddingHorizontal: 10,
-            marginTop: 10,
-            // marginBottom: 5,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 10,
-              paddingLeft: 0,
-              paddingVertical: 5,
-            }}
-          >
-            <FontAwesome name="heart-o" size={22} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            }}
-          >
-            <Ionicons name="share-social-outline" size={22} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            }}
-          >
-            <Ionicons name="chatbubble-outline" size={22} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.locationText}>
-          <FontAwesome name="location-arrow" size={14} /> Paris, France
-        </Text>
-      </View>
+                {/* Post Content */}
+                <Text style={styles.postText}>{article.content}</Text>
+                {/* Icons Section */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingHorizontal: 10,
+                    marginTop: 10,
+                  }}
+                >
+                  <TouchableOpacity style={{ paddingHorizontal: 10 }}>
+                    <FontAwesome name="heart-o" size={22} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ paddingHorizontal: 10 }}>
+                    <Ionicons name="share-social-outline" size={22} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ paddingHorizontal: 10 }}>
+                    <Ionicons name="chatbubble-outline" size={22} />
+                  </TouchableOpacity>
+                </View>
+                {/* Location */}
+                <Text style={styles.locationText}>
+                  <FontAwesome name="location-arrow" size={14} />{" "}
+                  {article.location}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No articles found for this category.
+            </Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -165,73 +173,45 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   header: {
+    backgroundColor: "#e6e6e6",
+    padding: 10,
+  },
+  scrollContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: 10,
-    paddingLeft: 0,
-    backgroundColor: "#e6e6e6",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)", // Darker bottom box shadow
   },
-  logo: {
-    fontSize: 20,
+  tabButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#144353",
+    marginRight: 10,
+    backgroundColor: "white",
+    elevation: 5,
+  },
+  activeTab: {
+    backgroundColor: "#144353",
+  },
+  tabText: {
+    fontSize: 14,
+    color: "#144353",
+  },
+  activeTabText: {
     color: "#fff",
-    fontWeight: "bold",
   },
-  profileIcon: {
-    alignSelf: "center",
-  },
-  profileImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-  },
-  // postCard: {
-  //   margin: 15,
-  //   backgroundColor: "#fff",
-  //   borderRadius: 10,
-  //   // padding: 10,
-  //   elevation: 3,
-  //   height: 420,
-  // },
-  // postAuthor: {
-  //   fontWeight: "bold",
-  //   padding: 10,
-  //   marginBottom: 5,
-  // },
-  // postImage: {
-  //   width: "100%",
-  //   height: 300,
-  //   // borderRadius: 10,
-  //   marginBottom: 10,
-  // },
-  // postText: {
-  //   fontSize: 16,
-  //   paddingHorizontal: 10,
-  // },
-  // postText2: {
-  //   fontSize: 12,
-  //   paddingHorizontal: 10,
-  //   color: "gray",
-  // },
-  // locationText: {
-  //   fontSize: 12,
-  //   color: "#7f8c8d",
-  //   marginTop: 5,
-  //   paddingHorizontal: 10,
-  // },
   postCard: {
     margin: 15,
     backgroundColor: "#fff",
     borderRadius: 10,
     elevation: 3,
-    height: 500,
+    overflow: "hidden",
   },
   profileImage: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 10, // Spacing between image and text
+    marginRight: 10,
   },
   postAuthor: {
     fontWeight: "bold",
@@ -253,43 +233,9 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 12,
     color: "#7f8c8d",
-    marginTop: 5,
     paddingHorizontal: 10,
-  },
-  icon: {
-    fontSize: 18,
-    color: "#000", // Adjust color if needed
-    paddingHorizontal: 5,
-  },
-
-  scrollContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  tabButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#144353",
-    marginRight: 10,
-    backgroundColor: "white",
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow direction (horizontal, vertical)
-    shadowOpacity: 0.1, // Shadow transparency
-    shadowRadius: 6, // How far the shadow spreads
-    // Android shadow property
-    elevation: 5, // Android shadow effect
-  },
-  activeTab: {
-    backgroundColor: "#144353",
-  },
-  tabText: {
-    fontSize: 14,
-    color: "#144353",
-  },
-  activeTabText: {
-    color: "#fff",
+    marginTop: 5,
+    marginBottom: 10, // Add marginBottom to the location text
   },
 });
 
