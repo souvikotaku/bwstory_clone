@@ -56,7 +56,7 @@ const HomeScreen = () => {
   };
 
   const handleShare = async (article) => {
-    console.log("article", article);
+    // console.log("article", article);
     try {
       const result = await Share.share({
         message: `Check out this article by ${article.author} (${
