@@ -11,6 +11,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   FlatList,
+  Share,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -51,6 +52,49 @@ const HomeScreen = () => {
       console.error("Error fetching articles:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleShare = async (article) => {
+    console.log("article", article);
+    try {
+      const result = await Share.share({
+        message: `Check out this article by ${article.author} (${
+          article.location
+        }):\n\n"${article.content}"\n\nImage: ${
+          article.postImage
+        }\n\nRead more here: ${article.link || "No link available"}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared with activity type:", result.activityType);
+        } else {
+          console.log("Shared successfully");
+
+          // Show a toast after successful share
+          Toast.show({
+            type: "success",
+            position: "top",
+            text1: "Article Shared!",
+            text2: "The article has been shared successfully.",
+            visibilityTime: 3000, // Toast visible for 3 seconds
+          });
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Share dismissed");
+      }
+    } catch (error) {
+      console.error("Error sharing the article:", error.message);
+
+      // Show error toast in case of failure
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Share Failed",
+        text2: "An error occurred while sharing the article.",
+        visibilityTime: 3000, // Toast visible for 3 seconds
+      });
     }
   };
 
@@ -241,7 +285,10 @@ const HomeScreen = () => {
                     {article.comments?.length || 0}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 10 }}>
+                <TouchableOpacity
+                  style={{ paddingHorizontal: 10 }}
+                  onPress={() => handleShare(article)}
+                >
                   <Ionicons name="share-social-outline" size={22} />
                 </TouchableOpacity>
               </View>
